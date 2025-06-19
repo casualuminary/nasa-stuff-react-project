@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import $ from 'jquery'
-  
+
 import PlayAgain from './PlayAgain'
 
 export default class Game extends Component {
@@ -14,32 +13,29 @@ export default class Game extends Component {
     gameCount: 0
   }
 
-//ajax request to get the image for the game
-  getGameImage = () => {
-    const spaceSearch = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"]
-    let randomSearchItem = spaceSearch[Math.floor(Math.random()*spaceSearch.length)];
-    let oneHundred = [];
-    for (let i = 0; i <= 100; i++) {
-       oneHundred.push(i);
+  //ajax request to get the image for the game
+  getGameImage = async (randomSearchItem) => {
+    try {
+      const spaceSearch = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"]
+      const url = "https://images-api.nasa.gov/search?q=";
+      let randomSearchItem = spaceSearch[Math.floor(Math.random()*spaceSearch.length)];
+      const response = await fetch(url + randomSearchItem);
+      const json = await response.json();
+      let oneHundred = [];
+      for (let i = 0; i <= 100; i++) {
+        oneHundred.push(i);
+      }
+
+      let randomNumber = oneHundred[Math.floor(Math.random()*oneHundred.length)]
+      const imageres = json.collection.items[randomNumber].links[0].href;
+
+      this.setState({
+        image: imageres,
+        item: randomSearchItem
+      });
+    } catch (error) {
+      console.error("Error fetching data from NASA API:", error);
     }
-    let randomNumber = oneHundred[Math.floor(Math.random()*oneHundred.length)]
-
-    const url = "https://images-api.nasa.gov/search?q="
-
-    // sending the call to the NASA API
-        $.ajax({
-          url: url + randomSearchItem,
-          type: "GET",
-          dataType : "json",
-        }).done(function(json){
-          let imageres = json.collection.items[randomNumber].links[0].href
-        }).then(json => {
-          this.setState({
-            image: json.collection.items[randomNumber].links[0].href,
-            item: randomSearchItem
-           })
-        })
-
   }
 
 //the game choices are rendered
@@ -61,12 +57,10 @@ export default class Game extends Component {
     })
 
     if (this.state.item === e.target.id) {
-      $(".namegamebutton").html("You're Right!")
-
+      document.querySelector(".namegamebutton").innerHTML = "You're Right!";
     } else {
-      $(".namegamebutton").html("Wrong, Try Again. Correct Answer: " + this.state.item)
+      document.querySelector(".namegamebutton").innerHTML = "Wrong, Try Again. Correct Answer: " + this.state.item;
     }
-
 
   }
 

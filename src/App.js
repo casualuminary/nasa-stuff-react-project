@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import $ from 'jquery'
 
 import Game from './components/Game'
 import SearchForm from './components/SearchForm'
@@ -17,15 +16,15 @@ export default class App extends Component {
     images: []
   }
 
-
-
 //The NASA API is called and then the results go to the state
-  fetchImages = (query = "") => {
-    $.ajax({
-      url: `https://images-api.nasa.gov/search?q=${query}`
-    }).then(json => {
-      this.setState({ images: json.collection.items })
-    })
+  fetchImages = async (query = "") => {
+    try {
+      const res = await fetch(`https://images-api.nasa.gov/search?q=${query}`, { signal: AbortSignal.timeout(5000) });
+      const json = await res.json();
+      this.setState({ images: json.collection.items });
+    } catch (err) {
+      console.error("Failed to fetch images", err);
+    }
   }
 
   //the welcome component has the header/navbar and the button to choose to search is toggled
