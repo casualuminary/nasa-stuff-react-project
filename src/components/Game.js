@@ -77,8 +77,10 @@ export default class Game extends Component {
 
 //ajax request after the component mounts
   componentDidMount(){
-    this.getGameImage()
-    this.setState({gameCount: this.state.gameCount++})
+    this.getGameImage();
+    this.setState((prevState) => ({
+      gameCount: prevState.gameCount + 1
+    }));
   }
 
 
@@ -90,7 +92,7 @@ export default class Game extends Component {
       <div className="namegame" >
 
         <div className="titlegame">Guess which one is associated with this image:</div>
-        <img src={this.state.image} id="namegameimage" />
+        <img src={this.state.image} id="namegameimage" alt="Game image" />
         {this.renderGame()}
         {this.state.gamePlayed ? <PlayAgain /> : null}
 
