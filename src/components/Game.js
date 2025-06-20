@@ -18,7 +18,7 @@ export default class Game extends Component {
     try {
       const spaceSearch = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"]
       const url = "https://images-api.nasa.gov/search?q=";
-      let randomSearchItem = spaceSearch[Math.floor(Math.random()*spaceSearch.length)];
+      let randomSearchItem = spaceSearch[Math.floor(Math.random() * spaceSearch.length)];
       const response = await fetch(url + randomSearchItem);
       const json = await response.json();
       let oneHundred = [];
@@ -26,7 +26,7 @@ export default class Game extends Component {
         oneHundred.push(i);
       }
 
-      let randomNumber = oneHundred[Math.floor(Math.random()*oneHundred.length)]
+      let randomNumber = oneHundred[Math.floor(Math.random() * oneHundred.length)]
       const imageres = json.collection.items[randomNumber].links[0].href;
 
       this.setState({
@@ -41,11 +41,11 @@ export default class Game extends Component {
 //the game choices are rendered
   playGame = () => {
     const spaceWords = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"]
-      return spaceWords.map(word =>
-        <div className="guessing">
-          <button onClick={ e => this.guessChoice(e)} id={word}>{word}</button>
-        </div>
-      )
+    return spaceWords.map(word =>
+      <div className="row justify-content-center">
+        <button className="btn btn-lg btn-dark btn-custom col-4 col-sm-4 col-md-2 mb-3" onClick={e => this.guessChoice(e)} id={word}>{word}</button>
+      </div>
+    )
   }
 
 //the player chooses one item and this function determines if it's a win
