@@ -1,33 +1,30 @@
-import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import SearchResults from "./SearchResults";
+import React, { useState } from 'react';
 
-class SearchForm extends Component {
-
-  state = {
-    query: ""
-  }
+function SearchForm(props){
+  const [query, setQuery] = useState();
+  const navigate = useNavigate();
 
   // This lets the SearchImages component know to use the query here for the search action
-  handleSubmit = event => {
-    event.preventDefault()
-    this.props.fetchImages(this.state.query)
+  const handleSubmit = event => {
+    event.preventDefault();
+    let queryInputValue = document.getElementById('queryInput').value;
+    navigate(`/search?q=${queryInputValue}`);
+    setQuery(queryInputValue);
   }
 
-
-
-  // Renders a form to search
-  render() {
-
-    return (
-      <div className="searchcontent">
-        <h3 className="searchtext">Enter a Celestial Term:</h3>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" value={this.state.query} onChange={event => this.setState({query: event.target.value})} />
-          <Link to="/search" onClick={this.handleSubmit}><button id="searchformbutton">Submit</button></Link>
-        </form>
-      </div>
-    )
-  };
+  return (
+    <div className="searchcontent">
+      <h3 className="searchtext">Enter a Celestial Term:</h3>
+      <form onSubmit={handleSubmit}>
+        <input type="text" id="queryInput" />
+        <Link to="/search" onClick={handleSubmit}><button id="searchformbutton">Submit</button></Link>
+      </form>
+      <SearchResults query={query}/>
+    </div>
+  );
 }
 
-export default SearchForm
+export default SearchForm;
