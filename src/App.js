@@ -5,6 +5,7 @@ import Game from './components/Game'
 import SearchForm from './components/SearchForm'
 import Header from './containers/Header'
 import './App.css';
+import { Navigate } from "react-router-dom";
 
 function App(props){
   return (
@@ -12,10 +13,17 @@ function App(props){
       <div>
         <Header/>
         <Routes>
-          <Route index element={
-            <SearchForm/>
+          {/* Redirect index to /search */}
+          <Route index element={<Navigate to="/search" replace/>}/>
           }/>
           <Route path="/game" element={<Game/>}/>
+          <Route
+            path="/search"
+            element={
+              <SearchForm/>
+            }
+          />
+
         </Routes>
       </div>
     </BrowserRouter>
