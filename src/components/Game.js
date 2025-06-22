@@ -1,102 +1,93 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import useNasaImages from "../hooks/useNasaImages";
+import PlayAgain from "./PlayAgain";
+import loadingStatus from "../helpers/loadingStatus";
+import LoadingIndicator from "./LoadingIndicator";
 
-import PlayAgain from './PlayAgain'
+const spaceWords = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"];
 
-export default class Game extends Component {
+const GuessList = ({onGuess}) => {
+  return spaceWords.map(word => (
+    <div className="row justify-content-center" key={word}>
+      <button
+        className="btn btn-lg btn-dark btn-custom col-4 col-sm-4 col-md-2 mb-3"
+        onClick={onGuess}
+        id={word}
+      >
+        {word}
+      </button>
+    </div>
+  ));
+};
 
-//state tracks the current image from the api, the item trhe player guessed, attempts played, and whether the game has been played once
-  state = {
-    images: [],
-    image: "",
-    item: "",
-    gamePlayed: false,
-    gameCount: 0
-  }
+const getRandomQuery = () => {
+  return spaceWords[Math.floor(Math.random() * spaceWords.length)];
+};
 
-  //ajax request to get the image for the game
-  getGameImage = async (randomSearchItem) => {
-    try {
-      const spaceSearch = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"]
-      const url = "https://images-api.nasa.gov/search?q=";
-      let randomSearchItem = spaceSearch[Math.floor(Math.random() * spaceSearch.length)];
-      const response = await fetch(url + randomSearchItem);
-      const json = await response.json();
-      let oneHundred = [];
-      for (let i = 0; i <= 100; i++) {
-        oneHundred.push(i);
-      }
+function Game(){
+  const [query, setQuery] = useState(getRandomQuery());;
+  const {images, loadingState} = useNasaImages(query);
 
-      let randomNumber = oneHundred[Math.floor(Math.random() * oneHundred.length)]
-      const imageres = json.collection.items[randomNumber].links[0].href;
+  const [gameImage, setgameImage] = useState();
+  const [gameAnswer, setgameAnswer] = useState(query);
+  const [gamePlayed, setgamePlayed] = useState(false);
+  const gameCounter = useRef(1);
+  const [score, setScore] = useState(0);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-      this.setState({
-        image: imageres,
-        item: randomSearchItem
-      });
-    } catch (error) {
-      console.error("Error fetching data from NASA API:", error);
+  useEffect(() => {
+    if (loadingState === loadingStatus.loaded) {
+      const randomIndex = Math.floor(Math.random() * images.length);
+      const image = images[randomIndex]?.links?.[0]?.href;
+      setgameImage(image);
+      setgameAnswer(query);
     }
-  }
+  }, [images, gameCounter.current]);
 
-//the game choices are rendered
-  playGame = () => {
-    const spaceWords = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"]
-    return spaceWords.map(word =>
-      <div className="row justify-content-center">
-        <button className="btn btn-lg btn-dark btn-custom col-4 col-sm-4 col-md-2 mb-3" onClick={e => this.guessChoice(e)} id={word}>{word}</button>
-      </div>
-    )
-  }
+  const incrementGameCounter = (e) => {
+    gameCounter.current++; // triggers useEffect to load a new image
+    setQuery(getRandomQuery);
+    setIsImageLoaded(false);
+    setgamePlayed(false);
+  };
 
-//the player chooses one item and this function determines if it's a win
-  guessChoice = (e) => {
+  const Score = () => {
+    return <div className="row justify-content-end px-5">
+      Score: {score} / {gameCounter.current - 1}
+    </div>
+  };
 
-    this.setState({
-      gamePlayed: true,
-      guess: e.target.id
-    })
+  const guessChoice = (e) => {
+    const guess = e.target.id;
 
-    if (this.state.item === e.target.id) {
+    if (gameAnswer === guess) {
+      setScore(prev => prev + 1);
       document.querySelector(".namegamebutton").innerHTML = "You're Right!";
     } else {
-      document.querySelector(".namegamebutton").innerHTML = "Wrong, Try Again. Correct Answer: " + this.state.item;
+      document.querySelector(".namegamebutton").innerHTML =
+        "Wrong, Try Again. Correct Answer: " + gameAnswer;
     }
-
-  }
-
-  playAgain = () => {
-    this.setState({
-      gamePlayed: false
-    })
-  }
-
-  renderGame = () => {
-    return <div className="namegamebutton">{this.playGame()}</div>
-  }
-
-
-//ajax request after the component mounts
-  componentDidMount(){
-    this.getGameImage();
-    this.setState((prevState) => ({
-      gameCount: prevState.gameCount + 1
-    }));
-  }
-
-
-//Renders the game image, the choices, and determines if the game is done and can be played again
-  render() {
-
+    setgamePlayed(true);
+  };
+  if (loadingState == loadingStatus.loaded) {
     return (
-
-      <div className="namegame" >
-
+      <div className="namegame">
+        <div className="row justify-content-center">Game no. {gameCounter.current}</div>
         <div className="titlegame">Guess which one is associated with this image:</div>
-        <img src={this.state.image} id="namegameimage" alt="Game image" />
-        {this.renderGame()}
-        {this.state.gamePlayed ? <PlayAgain /> : null}
-
+        {gameCounter.current > 1 ? <Score /> : null}
+        <img src={gameImage} id="namegameimage" alt="Game image" onLoad={() => setIsImageLoaded(true)}/>
+        {isImageLoaded && (
+          <div className="namegamebutton">
+            <GuessList onGuess={guessChoice}/>
+          </div>
+        )}
+        {gamePlayed ? <PlayAgain onClickHandler={incrementGameCounter}/> : null}
       </div>
     );
+  } else {
+    return <LoadingIndicator loadingState={loadingState}/>
   }
+
 }
+
+export default Game;
