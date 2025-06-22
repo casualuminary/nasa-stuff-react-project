@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import moon from './moon.jpg'
 import loadingStatus from '../helpers/loadingStatus';
 import LoadingIndicator from "./LoadingIndicator";
@@ -39,7 +39,7 @@ function SearchResults({query}){
     return <div className="noresult">no results yet</div>
   };
 
-  if (loadingState != loadingStatus.loaded)
+  if (loadingState !== loadingStatus.loaded)
     return <LoadingIndicator loadingState={loadingState} />
   else if (images) {
     return images.map((image, index) =>

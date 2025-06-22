@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import SearchResults from "./SearchResults";
 import React, { useState } from 'react';

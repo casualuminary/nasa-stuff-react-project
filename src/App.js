@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Game from './components/Game'
 import SearchForm from './components/SearchForm'
-import Header from './containers/Header'
+import Header from './components/Header'
 import './App.css';
 import { Navigate } from "react-router-dom";
 

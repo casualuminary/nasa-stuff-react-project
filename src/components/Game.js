@@ -29,7 +29,6 @@ function Game(){
   const {images, loadingState} = useNasaImages(query);
 
   const [gameImage, setgameImage] = useState();
-  const [gameAnswer, setgameAnswer] = useState(query);
   const [gamePlayed, setgamePlayed] = useState(false);
   const gameCounter = useRef(1);
   const [score, setScore] = useState(0);
@@ -40,12 +39,12 @@ function Game(){
       const randomIndex = Math.floor(Math.random() * images.length);
       const image = images[randomIndex]?.links?.[0]?.href;
       setgameImage(image);
-      setgameAnswer(query);
     }
-  }, [images, gameCounter.current]);
+  }, [images, loadingState, gameCounter.current]);
 
   const incrementGameCounter = (e) => {
-    gameCounter.current++; // triggers useEffect to load a new image
+    gameCounter.current++;
+    setgameImage(undefined); // triggers useEffect to load a new image
     setQuery(getRandomQuery);
     setIsImageLoaded(false);
     setgamePlayed(false);
@@ -60,22 +59,22 @@ function Game(){
   const guessChoice = (e) => {
     const guess = e.target.id;
 
-    if (gameAnswer === guess) {
+    if (query === guess) {
       setScore(prev => prev + 1);
       document.querySelector(".namegamebutton").innerHTML = "You're Right!";
     } else {
       document.querySelector(".namegamebutton").innerHTML =
-        "Wrong, Try Again. Correct Answer: " + gameAnswer;
+        "Wrong, Try Again. Correct Answer: " + query;
     }
     setgamePlayed(true);
   };
-  if (loadingState == loadingStatus.loaded) {
+  if (loadingState === loadingStatus.loaded) {
     return (
       <div className="namegame">
         <div className="row justify-content-center">Game no. {gameCounter.current}</div>
         <div className="titlegame">Guess which one is associated with this image:</div>
         {gameCounter.current > 1 ? <Score /> : null}
-        <img src={gameImage} id="namegameimage" alt="Game image" onLoad={() => setIsImageLoaded(true)}/>
+        <img src={gameImage} id="namegameimage" alt="Space Quiz" onLoad={() => setIsImageLoaded(true)}/>
         {isImageLoaded && (
           <div className="namegamebutton">
             <GuessList onGuess={guessChoice}/>
