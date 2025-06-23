@@ -32,7 +32,7 @@ function Game(){
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
   useEffect(() => {
-    if (loadingState === loadingStatus.loaded) {
+    if (loadingState === loadingStatus.loaded && !gamePlayed) {
       const randomIndex = Math.floor(Math.random() * images.length);
       const image = images[randomIndex]?.links?.[0]?.href;
       setgameImage(image);
@@ -41,10 +41,10 @@ function Game(){
   }, [images, loadingState, gamePlayed]);
 
   const resetGame = (e) => {
+    setgamePlayed(false);
     setgameImage(undefined); // triggers useEffect to load a new image
     setQuery(randomQuery);
     setIsImageLoaded(false);
-    setgamePlayed(false);
     setFeedbackMessage("")
   };
 
