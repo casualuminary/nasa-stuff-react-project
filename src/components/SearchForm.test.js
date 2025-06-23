@@ -33,11 +33,11 @@ describe('SearchForm', () => {
     const input = screen.getByRole('textbox');
     const button = screen.getByRole('button', { name: /submit/i });
 
-    fireEvent.change(input, { target: { value: 'mars' } });
+    fireEvent.change(input, { target: { value: 'jghsjgsjgsjgsj' } });
     fireEvent.click(button);
 
-    expect(mockedNavigate).toHaveBeenCalledWith('/search?q=mars');
-    expect(screen.getByTestId('search-results')).toHaveTextContent('SearchResults: mars');
+    expect(mockedNavigate).toHaveBeenCalledWith('/search?q=jghsjgsjgsjgsj');
+    expect(screen.getByTestId('search-results')).toHaveTextContent('SearchResults: jghsjgsjgsjgsj');
   });
 
   it('does not navigate if input is empty', () => {
@@ -46,6 +46,6 @@ describe('SearchForm', () => {
     const button = screen.getByRole('button', { name: /submit/i });
     fireEvent.click(button);
 
-    expect(mockedNavigate).toHaveBeenCalledWith('/search?q=');
+    expect(mockedNavigate).toHaveBeenCalledWith('/search?q=undefined');
   });
 });

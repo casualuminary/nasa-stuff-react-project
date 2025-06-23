@@ -15,7 +15,7 @@ function SearchForm(props){
   }
 
   return (
-    <div className="searchcontent">
+    <div className="searchcontent" data-testid="search-form">
       <h4 className="fw-bold text-center">Enter a Celestial Term:</h4>
       <form onSubmit={handleSubmit}>
         <div className="row justify-content-center">

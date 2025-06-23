@@ -26,7 +26,7 @@ function Game(){
 
   const [gameImage, setgameImage] = useState();
   const [gamePlayed, setgamePlayed] = useState(false);
-  const gameCounter = useRef(1);
+  const gameCounter = useRef(0);
   const [score, setScore] = useState(0);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState('');

@@ -29,6 +29,6 @@ describe('App routing', () => {
     fireEvent.click(playButton);
 
     expect(screen.getByTestId('banner')).toBeInTheDocument();
-    expect(document.querySelector('h3').textContent).toMatch(/Loading/);
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 });
