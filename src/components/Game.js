@@ -3,8 +3,8 @@ import useNasaImages from "../hooks/useNasaImages";
 import PlayAgain from "./PlayAgain";
 import loadingStatus from "../helpers/loadingStatus";
 import LoadingIndicator from "./LoadingIndicator";
-
-const spaceWords = ["moon", "earth", "jupiter", "saturn", "pluto", "mars", "venus"];
+import spaceWords from "../helpers/spaceWords";
+import randomQuery from "../helpers/randomQuery";
 
 const GuessList = ({onGuess}) => {
   return spaceWords.map(word => (
@@ -20,12 +20,8 @@ const GuessList = ({onGuess}) => {
   ));
 };
 
-const getRandomQuery = () => {
-  return spaceWords[Math.floor(Math.random() * spaceWords.length)];
-};
-
 function Game(){
-  const [query, setQuery] = useState(getRandomQuery());;
+  const [query, setQuery] = useState(randomQuery());;
   const {images, loadingState} = useNasaImages(query);
 
   const [gameImage, setgameImage] = useState();
@@ -45,7 +41,7 @@ function Game(){
   const incrementGameCounter = (e) => {
     gameCounter.current++;
     setgameImage(undefined); // triggers useEffect to load a new image
-    setQuery(getRandomQuery);
+    setQuery(randomQuery);
     setIsImageLoaded(false);
     setgamePlayed(false);
   };
@@ -61,22 +57,22 @@ function Game(){
 
     if (query === guess) {
       setScore(prev => prev + 1);
-      document.querySelector(".namegamebutton").innerHTML = "You're Right!";
+      document.querySelector(".guessgamebutton").innerHTML = "You're Right!";
     } else {
-      document.querySelector(".namegamebutton").innerHTML =
+      document.querySelector(".guessgamebutton").innerHTML =
         "Wrong, Try Again. Correct Answer: " + query;
     }
     setgamePlayed(true);
   };
   if (loadingState === loadingStatus.loaded) {
     return (
-      <div className="namegame">
+      <div className="guessgame" data-testid="guessgame">
         <div className="row justify-content-center">Game no. {gameCounter.current}</div>
         <div className="titlegame">Guess which one is associated with this image:</div>
         {gameCounter.current > 1 ? <Score /> : null}
-        <img src={gameImage} id="namegameimage" alt="Space Quiz" onLoad={() => setIsImageLoaded(true)}/>
+        <img src={gameImage} alt="Space Quiz" onLoad={() => setIsImageLoaded(true)}/>
         {isImageLoaded && (
-          <div className="namegamebutton">
+          <div className="guessgamebutton">
             <GuessList onGuess={guessChoice}/>
           </div>
         )}
