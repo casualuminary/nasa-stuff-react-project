@@ -25,7 +25,7 @@ describe('App routing', () => {
 
   it('renders Game at /game', () => {
     render(<App />);
-    const playButton = screen.getByRole('button', {name: 'Play !'});
+    const playButton = screen.getByRole('button', {name: 'Play!'});
     fireEvent.click(playButton);
 
     expect(screen.getByTestId('banner')).toBeInTheDocument();

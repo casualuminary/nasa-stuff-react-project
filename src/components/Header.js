@@ -21,7 +21,7 @@ const Header = () => {
 
         <nav className="col-2 navbar d-flex justify-content-center">
           <Link to="/game">
-            <button className="btn btn-lg btn-dark border-0" type="submit">Play !</button>
+            <button className="btn btn-lg btn-dark border-0" type="submit">Play!</button>
           </Link>
         </nav>
       </header>

@@ -29,21 +29,23 @@ function Game(){
   const gameCounter = useRef(1);
   const [score, setScore] = useState(0);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState('');
 
   useEffect(() => {
     if (loadingState === loadingStatus.loaded) {
       const randomIndex = Math.floor(Math.random() * images.length);
       const image = images[randomIndex]?.links?.[0]?.href;
       setgameImage(image);
+      setgamePlayed(true);
     }
-  }, [images, loadingState, gameCounter.current]);
+  }, [images, loadingState, gamePlayed]);
 
-  const incrementGameCounter = (e) => {
-    gameCounter.current++;
+  const resetGame = (e) => {
     setgameImage(undefined); // triggers useEffect to load a new image
     setQuery(randomQuery);
     setIsImageLoaded(false);
     setgamePlayed(false);
+    setFeedbackMessage("")
   };
 
   const Score = () => {
@@ -54,15 +56,14 @@ function Game(){
 
   const guessChoice = (e) => {
     const guess = e.target.id;
+    gameCounter.current++;
 
     if (query === guess) {
       setScore(prev => prev + 1);
-      document.querySelector(".guessgamebutton").innerHTML = "You're Right!";
+      setFeedbackMessage("You're Right!");
     } else {
-      document.querySelector(".guessgamebutton").innerHTML =
-        "Wrong, Try Again. Correct Answer: " + query;
+      setFeedbackMessage("Wrong, Try Again. Correct Answer: " + query);
     }
-    setgamePlayed(true);
   };
   if (loadingState === loadingStatus.loaded) {
     return (
@@ -74,9 +75,10 @@ function Game(){
         {isImageLoaded && (
           <div className="guessgamebutton">
             <GuessList onGuess={guessChoice}/>
+            {gamePlayed ? <div className="feedback-message text-center mt-3">{feedbackMessage}</div> : null}
           </div>
         )}
-        {gamePlayed ? <PlayAgain onClickHandler={incrementGameCounter}/> : null}
+        {gamePlayed &&feedbackMessage ? <PlayAgain onClickHandler={resetGame}/> : null}
       </div>
     );
   } else {
