@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { FaHome } from "react-icons/fa";
 import React from "react";
 
@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <div>
-      <header className="row mb-4 header">
+      <header data-testid="banner" className="row mb-4 header">
         <nav className="col-2 navbar nav-left justify-content-center">
           <Link to="/">
             <FaHome size={30}/>
