@@ -36,6 +36,7 @@ function Game(){
       const randomIndex = Math.floor(Math.random() * images.length);
       const image = images[randomIndex]?.links?.[0]?.href;
       setgameImage(image);
+      gameCounter.current++;
       setgamePlayed(true);
     }
   }, [images, loadingState, gamePlayed]);
@@ -50,13 +51,12 @@ function Game(){
 
   const Score = () => {
     return <div className="row justify-content-end px-5">
-      Score: {score} / {gameCounter.current - 1}
+      Score: {score} / {gameCounter.current}
     </div>
   };
 
   const guessChoice = (e) => {
     const guess = e.target.id;
-    gameCounter.current++;
 
     if (query === guess) {
       setScore(prev => prev + 1);

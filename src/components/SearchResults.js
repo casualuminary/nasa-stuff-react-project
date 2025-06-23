@@ -36,12 +36,12 @@ function SearchResults({query}){
 
   //A function to help show a message when the search term returns no results
   const noResults = () => {
-    return <div className="noresult">no results yet</div>
+    return <div className="noresult">no results found</div>
   };
 
-  if (loadingState !== loadingStatus.loaded)
+  if (loadingState === loadingStatus.isLoading)
     return <LoadingIndicator loadingState={loadingState} />
-  else if (images) {
+  else if (images && images.length >0) {
     return images.map((image, index) =>
       <div className="cardborder" key={index}>
         <div className="leftbox">
@@ -61,7 +61,7 @@ function SearchResults({query}){
           {image.data[0].secondary_creator}
         </div>
       </div>)
-  } else {
+  } else if(loadingState === loadingStatus.loaded && images.length===0) {
     return noResults();
   }
 }

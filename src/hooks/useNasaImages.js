@@ -3,7 +3,7 @@ import loadingStatus from '../helpers/loadingStatus';
 
 const useNasaImages = (query) => {
   const [images, setImages] = useState();
-  const [loadingState, setLoading] = useState([]);
+  const [loadingState, setLoading] = useState(null);
 
   useEffect(() => {
     //The NASA API is called and then the results go to the state
